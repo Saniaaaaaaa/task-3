@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catalog-Z Clone</title>
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+body{
+    background:#ffffff;
+}
+
+/* NAVBAR */
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding: 0 10%;
+    height: 75px;
+    background:#fff;
+    border-bottom: 1px solid #eee;
+}
+
+.logo{
+    color:#0097a7;
+    font-size:26px;
+    font-weight:400;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.nav-links{
+    display:flex;
+    gap:40px;
+    list-style:none;
+    height: 100%;
+}
+
+.nav-links li {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    position: relative;
+}
+
+.nav-links a{
+    text-decoration:none;
+    color:#666;
+    font-size: 15px;
+    transition: color 0.2s ease;
+}
+
+/* Active styling mimicking your reference image layout exactly */
+.nav-links li.active {
+    background-color: #00acc1;
+    padding: 0 20px;
+}
+
+.nav-links li.active a {
+    color: #fff;
+}
+
+.nav-links a:hover{
+    color:#00acc1;
+}
+.nav-links li.active a:hover {
+    color: #fff;
+}
+
+/* HERO SEARCH SECTION - FIXED EMBEDDED DUCK BACKGROUND */
+.hero{
+    width: 100%;
+    height: 380px;
+    /* Embedded SVG background directly in the CSS code so it never fails to load */
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 400' preserveAspectRatio='xMidYMid slice'><rect width='100%25' height='100%25' fill='%23b2ebf2'/><path d='M0,250 Q300,220 600,250 T1200,250 L1200,400 L0,400 Z' fill='%2380deea' opacity='0.5'/><path d='M0,280 Q400,310 800,280 T1200,280 L1200,400 L0,400 Z' fill='%234dd0e1' opacity='0.3'/><g transform='translate(250, 140) scale(1.3)'><path d='M60,40 C70,10 100,10 110,30 C120,40 115,60 95,65 C70,70 50,85 30,85 C10,85 0,70 5,55 C10,45 25,45 35,55 C45,65 55,55 60,40 Z' fill='%23ffffff'/><path d='M105,25 Q125,23 120,33 Z' fill='%23ff9800'/><circle cx='95' cy='28' r='2' fill='%23000000'/><path d='M30,85 C50,110 90,105 105,80 C80,82 50,80 30,85 Z' fill='%23e0f7fa' opacity='0.7'/></g></svg>");
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.search-box{
+    display: flex;
+    width: 100%;
+    max-width: 580px;
+    height: 54px;
+    box-shadow: 0 8px 24px rgba(0,151,167,0.2);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    z-index: 10;
+}
+
+.search-box input{
+    flex: 1;
+    padding: 0 24px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: #333;
+}
+
+.search-box input::placeholder {
+    color: #009899;
+}
+
+.search-box button{
+    width: 64px;
+    border: none;
+    background: #009899;
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background 0.2s ease;
+}
+
+.search-box button:hover {
+    background: #007d7e;
+}
+
+/* MAIN CONTENT CONTAINER */
+.container{
+    width: 90%;
+    max-width: 1400px;
+    margin: 50px auto 40px auto;
+    padding: 0 15px;
+}
+
+/* HEADER BAR */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 35px;
+}
+
+.section-title{
+    color: #009899;
+    font-size: 28px;
+    font-weight: 400;
+}
+
+.top-pagination {
+    font-size: 14px;
+    color: #009899;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.top-pagination span {
+    color: #7f7f7f;
+}
+
+.top-pagination input {
+    width: 35px;
+    height: 30px;
+    text-align: center;
+    border: 1px solid #dcdcdc;
+    color: #009899;
+    font-size: 14px;
+    background-color: #f4f4f4;
+    outline: none;
+}
+
+/* GALLERY GRID RIGID ALIGNMENT */
+.gallery{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: flex-start;
+}
+
+.card{
+    width: calc(25% - 15px); 
+    margin-bottom: 25px;
+}
+
+/* Bounding container enforcing exact row dimensions across all elements */
+.img-container {
+    width: 100%;
+    position: relative;
+    aspect-ratio: 16 / 7.2; 
+    overflow: hidden;
+    background-color: #f0f0f0;
+}
+
+.card img{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.card-info{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 12px;
+    font-size: 13px;
+    color: #bcbcbc;
+}
+
+/* BOTTOM PAGINATION */
+.pagination{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin:60px 0;
+}
+
+.btn{
+    background:#00a8b5;
+    color:white;
+    border:none;
+    padding:15px 40px;
+    border-radius:4px;
+    cursor:pointer;
+}
+
+.page-numbers{
+    display:flex;
+    gap:10px;
+}
+
+.page{
+    width:45px;
+    height:45px;
+    background:#e8e8e8;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.active{
+    background:#00a8b5;
+    color:white;
+}
+
+/* FOOTER */
+footer{
+    background:#eaeaea;
+    padding:70px 10%;
+    margin-top: 60px;
+}
+
+.footer-row{
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+}
+
+.footer-col{
+    width:30%;
+}
+
+.footer-col h3{
+    color:#00a8b5;
+    margin-bottom:20px;
+}
+
+.footer-col p,
+.footer-col li{
+    color:#777;
+    line-height:1.8;
+}
+
+.footer-col ul{
+    list-style:none;
+}
+
+.social{
+    display:flex;
+    gap:15px;
+    margin-top:20px;
+}
+
+.social div{
+    width:40px;
+    height:40px;
+    background:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.copyright{
+    text-align:center;
+    margin-top:50px;
+    color:#777;
+}
+
+/* RESPONSIVE LAYOUT BREAKPOINTS */
+@media(max-width:1200px){
+    .card {
+        width: calc(33.333% - 14px);
+    }
+}
+
+@media(max-width:768px){
+    .card {
+        width: calc(50% - 10px);
+    }
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+}
+
+@media(max-width:480px){
+    .card {
+        width: 100%;
+    }
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="logo">
+        <i class="fa-solid fa-film"></i> Catalog-Z
+    </div>
+    <ul class="nav-links">
+        <li class="active"><a href="#">Photos</a></li>
+        <li><a href="#">Videos</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Contact</a></li>
+    </ul>
+</nav>
+
+<section class="hero">
+    <div class="search-box">
+        <input type="text" placeholder="Search">
+        <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+    </div>
+</section>
+
+<div class="container">
+
+    <div class="section-header">
+        <h2 class="section-title">Latest Photos</h2>
+        <div class="top-pagination">
+            <span>Page</span>
+            <input type="text" value="1">
+            <span>of 200</span>
+        </div>
+    </div>
+
+    <div class="gallery">
+
+        <div class="card">
+            <div class="img-container">
+                <img src="image/clock.jpg">
+            </div>
+            <div class="card-info">
+                <span>18 Oct 2020</span>
+                <span>9,906 views</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="img-container">
+                <img src="image/plant.jpg">
+            </div>
+            <div class="card-info">
+                <span>14 Oct 2020</span>
+                <span>16,100 views</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="img-container">
+                <img src="image/morning.jpg">
+            </div>
+            <div class="card-info">
+                <span>12 Oct 2020</span>
+                <span>12,460 views</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="img-container">
+                <img src="image/headphones.jpg">
+            </div>
+            <div class="card-info">
+                <span>10 Oct 2020</span>
+                <span>11,402 views</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="img-container">
+                <img src="image/hanger.jpg">
+            </div>
+            <div class="card-info">
+                <span>24 Sep 2020</span>
+                <span>16,008 views</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="img-container">
+                <img src="image/perfume.jpg">
+            </div>
+            <div class="card-info">
+                <span>20 Sep 2020</span>
+                <span>12,860 views</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="img-container">
+                <img src="image/bus.jpg">
+            </div>
+            <div class="card-info">
+                <span>16 Sep 2020</span>
+                <span>10,900 views</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="img-container">
+                <img src="image/new york.jpg">
+            </div>
+            <div class="card-info">
+                <span>16 Sep 2020</span>
+                <span>10,900 views</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="img-container">
+                <img src="image/purple.jpg">
+            </div>
+            <div class="card-info">
+                <span>12 Sep 2020</span>
+                <span>11,300 views</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="img-container">
+                <img src="image/sea.jpg">
+            </div>
+            <div class="card-info">
+                <span>13 Sep 2020</span>
+                <span>10,300 views</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="img-container">
+                <img src="image/animals.jpg">
+            </div>
+            <div class="card-info">
+                <span>14 Sep 2020</span>
+                <span>17,300 views</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="img-container">
+                <img src="image/sunset.jpg">
+            </div>
+            <div class="card-info">
+                <span>15 Sep 2020</span>
+                <span>19,300 views</span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="pagination">
+        <button class="btn">Previous</button>
+        <div class="page-numbers">
+            <div class="page active">1</div>
+            <div class="page">2</div>
+            <div class="page">3</div>
+            <div class="page">4</div>
+        </div>
+        <button class="btn">Next Page</button>
+    </div>
+
+</div>
+
+<footer>
+    <div class="footer-row">
+        <div class="footer-col">
+            <h3>About Catalog-Z</h3>
+            <p>Catalog-Z is a free Bootstrap template for photo and video websites.</p>
+        </div>
+        <div class="footer-col">
+            <h3>Our Links</h3>
+            <ul>
+                <li>Advertise</li>
+                <li>Support</li>
+                <li>Our Company</li>
+                <li>Contact</li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h3>Social Media</h3>
+            <div class="social">
+                <div>F</div>
+                <div>T</div>
+                <div>I</div>
+                <div>P</div>
+            </div>
+        </div>
+    </div>
+    <div class="copyright">
+        Copyright © 2026 Catalog-Z Company.
+    </div>
+</footer>
+
+</body>
+</html>
